@@ -185,7 +185,7 @@ export async function pack(this: EsbuildServerlessPlugin) {
       const artifactPath = path.join(this.workDirPath, SERVERLESS_FOLDER, zipName);
 
       // filter files
-      const filesPathList = filterFilesForZipPackage({
+      const filesPathListList = filterFilesForZipPackage({
         files,
         functionAlias,
         includedFiles,
@@ -193,12 +193,16 @@ export async function pack(this: EsbuildServerlessPlugin) {
         hasExternals,
         isGoogleProvider,
         depWhiteList,
-      })
-        // remove prefix from individual function extra files
-        .map(({ localPath, ...rest }) => ({
-          localPath: localPath.replace(`${ONLY_PREFIX}${functionAlias}/`, ''),
-          ...rest,
-        }));
+      });
+
+      console.log('WE ARE HERE');
+      console.log('YOOOOOO', filesPathListList);
+
+      // remove prefix from individual function extra files
+      const filesPathList = filesPathListList.map(({ localPath, ...rest }) => ({
+        localPath: localPath.replace(`${ONLY_PREFIX}${functionAlias}/`, ''),
+        ...rest,
+      }));
 
       const startZip = Date.now();
       await zip(artifactPath, filesPathList, this.buildOptions.nativeZip);
